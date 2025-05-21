@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>烟叶合同订立随堂小测验</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            background-color: #f9f7f2;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .quiz-container {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            margin-top: 20px;
+        }
+        h1 {
+            color: #3b7a57;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 24px;
+        }
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .quiz-header img {
+            max-width: 120px;
+            margin-bottom: 10px;
+        }
+        .question {
+            background: #f4f9f4;
+            border-left: 4px solid #3b7a57;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 5px;
+        }
+        .answer-option {
+            display: block;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+        button {
+            background-color: #3b7a57;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        button:hover {
+            background-color: #2e5e43;
+            transform: translateY(-2px);
+        }
+        button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .result {
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            font-weight: bold;
+            display: none;
+        }
+        .success {
+            background-color: #dff0d8;
+            color: #3c763d;
+            border: 1px solid #d6e9c6;
+        }
+        .error {
+            background-color: #f2dede;
+            color: #a94442;
+            border: 1px solid #ebccd1;
+        }
+        .celebration {
+            font-size: 24px;
+            text-align: center;
+            margin: 20px 0;
+            display: none;
+        }
+        .progress-container {
+            width: 100%;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+        .progress-bar {
+            height: 100%;
+            background-color: #3b7a57;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        .score-display {
+            text-align: center;
+            font-size: 18px;
+            margin: 20px 0;
+        }
+        .final-result {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 18px;
+            display: none;
+        }
+        .firework {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            box-shadow: 0 0 6px 2px #fff;
+            animation: explosion 0.8s ease-out infinite;
+        }
+        @keyframes explosion {
+            0% {
+                transform: scale(0);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(25);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz-header">
+            <h1>烟叶合同订立随堂小测验</h1>
+            <p>请根据所学知识完成以下判断题，检验您的学习成果</p>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        
+        <div class="score-display">
+            当前得分: <span id="score">0</span>/5
+        </div>
+        
+        <div id="quiz-content">
+            <!-- 题目会通过JavaScript动态加载 -->
+        </div>
+        
+        <div class="button-group">
+            <button id="prev-btn" disabled>上一题</button>
+            <button id="next-btn">下一题</button>
+            <button id="submit-btn" style="display:none;">提交答案</button>
+        </div>
+        
+        <div id="result-message" class="result"></div>
+        <div id="celebration" class="celebration"></div>
+        
+        <div id="final-result" class="final-result"></div>
+    </div>
+
+    <script>
+        // 测验题目数据
+        const quizData = [
+            {
+                question: "1. 地市级烟草公司与烟叶种植者签订合同时，双方应本着平等、自愿的原则。",
+                correct: true,
+                explanation: "正确！根据第五条规定，地市级烟草公司为合同甲方，烟叶种植者为合同乙方，双方本着平等、自愿的原则协商签订合同。"
+            },
+            {
+                question: "2. 烟叶合同可以在烟叶收获后再签订。",
+                correct: false,
+                explanation: "错误！根据第六条第3点规定，合同应在烟叶移栽前签订，而非收获后。"
+            },
+            {
+                question: "3. 烟叶种植者在育苗播种前需填写《烟叶种植意向表》提出种烟需求。",
+                correct: true,
+                explanation: "正确！根据第六条第1点规定，育苗播种前，有种植意向的种植者需向地市级烟草公司提出种烟需求，填写《烟叶种植意向表》。"
+            },
+            {
+                question: "4. 面积核实与合同不一致时，直接按原合同执行，不需要变更。",
+                correct: false,
+                explanation: "错误！根据第六条第4点规定，面积核实与合同不一致的，需在计划范围内，按实际移栽面积变更合同约定种植收购信息，并由双方签字确认。"
+            },
+            {
+                question: "5. 烟草公司应在移栽后20天内将合同全部发放至烟叶种植者手中。",
+                correct: true,
+                explanation: "正确！根据第六条第5点规定，移栽后20天内，烟草公司应将合同全部发放至烟叶种植者手中。"
+            }
+        ];
+
+        // 表扬语句库
+        const praises = [
+            "太棒了！你对烟叶合同订立流程掌握得非常好！👍",
+            "真厉害！你的答案完全正确！🎉",
+            "出色的表现！你对这部分内容理解得很透彻！✨",
+            "答对了！你的专业知识令人印象深刻！🌟",
+            "完美！你的答案非常准确！💯",
+            "太优秀了！继续保持这样的学习热情！🔥",
+            "了不起！你对烟叶合同知识掌握得很全面！⭐",
+            "回答正确！你的学习态度值得表扬！👏",
+            "棒极了！你是烟叶合同知识的行家！🏆",
+            "非常正确！你的认真学习态度得到了回报！🎯"
+        ];
+
+        // 变量初始化
+        let currentQuestion = 0;
+        let score = 0;
+        let answeredQuestions = [];
+        
+        // 获取DOM元素
+        const quizContent = document.getElementById('quiz-content');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const submitBtn = document.getElementById('submit-btn');
+        const resultMessage = document.getElementById('result-message');
+        const celebration = document.getElementById('celebration');
+        const progressBar = document.getElementById('progress-bar');
+        const scoreDisplay = document.getElementById('score');
+        const finalResult = document.getElementById('final-result');
+        
+        // 加载题目函数
+        function loadQuestion() {
+            resultMessage.style.display = 'none';
+            celebration.style.display = 'none';
+            
+            const currentQuizData = quizData[currentQuestion];
+            
+            let questionHTML = `
+                <div class="question">
+                    <p>${currentQuizData.question}</p>
+                    <label class="answer-option">
+                        <input type="radio" name="answer" value="true" ${answeredQuestions[currentQuestion] === 'true' ? 'checked' : ''}> 正确
+                    </label>
+                    <label class="answer-option">
+                        <input type="radio" name="answer" value="false" ${answeredQuestions[currentQuestion] === 'false' ? 'checked' : ''}> 错误
+                    </label>
+                </div>
+            `;
+            
+            quizContent.innerHTML = questionHTML;
+            
+            // 更新进度条
+            progressBar.style.width = `${((currentQuestion + 1) / quizData.length) * 100}%`;
+            
+            // 如果是最后一题，显示提交按钮
+            if (currentQuestion === quizData.length - 1) {
+                nextBtn.style.display = 'none';
+                submitBtn.style.display = 'block';
+            } else {
+                nextBtn.style.display = 'block';
+                submitBtn.style.display = 'none';
+            }
+            
+            // 如果是第一题，禁用上一题按钮
+            prevBtn.disabled = currentQuestion === 0;
+        }
+        
+        // 检查答案函数
+        function checkAnswer() {
+            const answer = document.querySelector('input[name="answer"]:checked');
+            
+            if (!answer) {
+                alert('请选择一个答案！');
+                return false;
+            }
+            
+            const answerValue = answer.value === 'true';
+            answeredQuestions[currentQuestion] = answer.value;
+            
+            const currentQuizData = quizData[currentQuestion];
+            
+            if (answerValue === currentQuizData.correct) {
+                // 答案正确
+                resultMessage.innerHTML = `
+                    <p>${currentQuizData.explanation}</p>
+                    <p>${getRandomPraise()}</p>
+                `;
+                resultMessage.className = 'result success';
+                celebration.innerHTML = '🎉';
+                celebration.style.display = 'block';
+                createFireworks();
+                
+                // 如果之前没有得分，增加分数
+                if (!answeredQuestions.hasOwnProperty(currentQuestion + 'scored')) {
+                    score++;
+                    scoreDisplay.textContent = score;
+                    answeredQuestions[currentQuestion + 'scored'] = true;
+                }
+            } else {
+                // 答案错误
+                resultMessage.innerHTML = `
+                    <p>${currentQuizData.explanation}</p>
+                    <p>再试一次，你一定能做对！</p>
+                `;
+                resultMessage.className = 'result error';
+            }
+            
+            resultMessage.style.display = 'block';
+            return true;
+        }
+        
+        // 随机获取表扬语句
+        function getRandomPraise() {
+            return praises[Math.floor(Math.random() * praises.length)];
+        }
+        
+        // 创建烟花效果
+        function createFireworks() {
+            const container = document.querySelector('.quiz-container');
+            for (let i = 0; i < 5; i++) {
+                setTimeout(() => {
+                    const firework = document.createElement('div');
+                    firework.className = 'firework';
+                    
+                    // 随机位置
+                    const x = Math.random() * container.offsetWidth;
+                    const y = Math.random() * container.offsetHeight;
+                    
+                    // 随机颜色
+                    const colors = ['#FF5252', '#FFD740', '#64FFDA', '#536DFE', '#FF4081'];
+                    const color = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    firework.style.left = `${x}px`;
+                    firework.style.top = `${y}px`;
+                    firework.style.backgroundColor = color;
+                    
+                    container.appendChild(firework);
+                    
+                    // 移除烟花元素
+                    setTimeout(() => {
+                        container.removeChild(firework);
+                    }, 800);
+                }, i * 200);
+            }
+        }
+        
+        // 显示最终结果
+        function showFinalResult() {
+            quizContent.style.display = 'none';
+            prevBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+            submitBtn.style.display = 'none';
+            resultMessage.style.display = 'none';
+            
+            let message = '';
+            if (score === quizData.length) {
+                message = `
+                    <h2>恭喜你！满分通关！🏆</h2>
+                    <p>你获得了 ${score}/${quizData.length} 分！</p>
+                    <p>你对烟叶合同订立的知识掌握得非常完美，继续保持！</p>
+                    <div style="font-size: 40px; margin: 20px 0;">🎉🎊🎯</div>
+                `;
+                createFireworks();
+            } else if (score >= quizData.length * 0.8) {
+                message = `
+                    <h2>太棒了！🌟</h2>
+                    <p>你获得了 ${score}/${quizData.length} 分！</p>
+                    <p>你对烟叶合同订立的知识掌握得非常好，还有一点小细节需要注意。</p>
+                    <div style="font-size: 30px; margin: 20px 0;">👏✨</div>
+                `;
+            } else {
+                message = `
+                    <h2>做得不错！👍</h2>
+                    <p>你获得了 ${score}/${quizData.length} 分！</p>
+                    <p>继续学习，相信你下次会做得更好！</p>
+                    <div style="font-size: 24px; margin: 20px 0;">💪📚</div>
+                `;
+            }
+            
+            finalResult.innerHTML = message;
+            finalResult.style.display = 'block';
+        }
+        
+        // 事件监听器
+        nextBtn.addEventListener('click', () => {
+            if (checkAnswer()) {
+                currentQuestion++;
+                loadQuestion();
+            }
+        });
+        
+        prevBtn.addEventListener('click', () => {
+            currentQuestion--;
+            loadQuestion();
+        });
+        
+        submitBtn.addEventListener('click', () => {
+            if (checkAnswer()) {
+                setTimeout(() => {
+                    showFinalResult();
+                }, 1500);
+            }
+        });
+        
+        // 初始化加载第一题
+        loadQuestion();
+    </script>
+</body>
+</html>
